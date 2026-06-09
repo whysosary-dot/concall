@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📞 해외사 컨콜 모음</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<style>
+  :root{
+    --bg:#eef0f3;--card:#fff;--line:#dfe3e8;--ink:#222;--sub:#6b7280;
+    --accent:#e23b3b;--blue:#2563eb;--hi:#fff27a;--green:#16a34a;--soft:#f6f7f9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",Roboto,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:14px;line-height:1.65}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px 14px 90px}
+  h1{font-size:27px;font-weight:800;margin:0 0 2px;display:flex;align-items:center;gap:9px}
+  h1 .ph{color:var(--accent)}
+  .tag{color:var(--sub);font-size:12.5px;margin-bottom:16px}
+  .tag a{color:var(--blue);text-decoration:none;font-weight:600}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:11px;margin-bottom:9px;padding:10px 12px}
+  .row1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  select,input,button{font-family:inherit;font-size:13.5px;color:var(--ink)}
+  select,input{padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+  .row1 input.url{flex:1;min-width:220px}
+  button{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 13px;font-weight:600}
+  button:hover{background:var(--soft)}
+  .btn-d{background:#f3f4f6}
+  .collap{display:flex;align-items:center;gap:8px;cursor:pointer;color:#374151;font-weight:600}
+  .collap .cv{color:var(--sub);transition:transform .15s;font-size:11px}
+  .collap.op .cv{transform:rotate(90deg)}
+  .collap-body{display:none;margin-top:10px;color:var(--sub);font-size:13px;border-top:1px dashed var(--line);padding-top:10px}
+  .collap.op + .collap-body{display:block}
+  .ind-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .ind-row .hint{color:var(--sub);font-size:12.5px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 8px}
+  .filters select{background:#fff}
+  .filters select.done{background:#eafbf0;border-color:#bbf0cd;color:#15803d;font-weight:600}
+  .search{width:100%;margin-bottom:6px}
+  .count{color:var(--sub);font-size:12.5px;margin:8px 2px 14px}
+  .pager{display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 16px;color:#374151}
+  .pager button{min-width:110px}
+  /* card */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:11px;overflow:hidden}
+  .chead{display:flex;align-items:flex-start;gap:11px;padding:14px 15px;cursor:pointer}
+  .chead:hover{background:#fafbfc}
+  .chk{width:22px;height:22px;border-radius:6px;border:2px solid #cbd5e1;flex-shrink:0;display:flex;
+    align-items:center;justify-content:center;font-size:13px;color:#fff;margin-top:1px}
+  .chk.done{background:var(--green);border-color:var(--green)}
+  .ctitle{font-weight:700;font-size:15.5px;margin:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .ctitle .tk{color:var(--accent)}
+  .ctitle .vmark{color:var(--green)}
+  .csub{color:var(--sub);font-size:12.5px;margin-top:4px}
+  .cicons{margin-left:auto;display:flex;gap:6px;flex-shrink:0;align-items:center}
+  .cicons button{padding:5px 9px;font-size:12px;border-radius:7px}
+  .badge-pend{font-size:11px;color:#b45309;background:#fff7ed;border:1px solid #fed7aa;padding:2px 7px;border-radius:20px;font-weight:600}
+  .cbody{display:none;border-top:1px solid var(--line)}
+  .card.open .cbody{display:block}
+  .card.open .chev{transform:rotate(90deg)}
+  /* radio tabs */
+  .modes{display:flex;gap:18px;flex-wrap:wrap;padding:13px 16px;background:#fafbfc;border-bottom:1px solid var(--line)}
+  .modes label{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13.5px;color:#374151}
+  .modes input{accent-color:var(--accent);width:15px;height:15px}
+  .modes label.on{color:var(--accent);font-weight:700}
+  /* hl toolbar */
+  .hltb{display:flex;align-items:center;gap:10px;padding:9px 16px;background:#fcfcdc;border-bottom:1px solid #ecdebf;
+    font-size:12px;color:#6b6320}
+  .hltb .clr{margin-left:auto;font-size:11.5px;padding:5px 10px}
+  .pane{padding:18px 20px;display:none}
+  .pane.on{display:block}
+  .pane h2{font-size:16px;margin:16px 0 7px}.pane h2:first-child{margin-top:0}
+  .pane strong{background:linear-gradient(transparent 58%,var(--hi) 58%);padding:0 1px;font-weight:700}
+  .pane ul{padding-left:19px;margin:6px 0}.pane li{margin:2px 0}
+  .pane p{margin:0 0 12px}
+  mark{background:var(--hi);padding:0 1px;border-radius:2px;cursor:pointer}
+  .selectable{user-select:text}
+  .selectable p{white-space:pre-wrap}
+  .selectable p.cur{background:#fff8d6;border-radius:4px}
+  /* dual */
+  .dual{display:grid;grid-template-columns:1fr 1fr}
+  .dual .col{padding:4px 16px}.dual .col:first-child{border-right:1px solid var(--line)}
+  .dual .lbl{font-size:10.5px;letter-spacing:.5px;color:var(--sub);font-weight:700;text-transform:uppercase;margin:10px 0 4px}
+  .dual p{margin:0 0 11px;white-space:pre-wrap}
+  /* player */
+  .player{background:#f4f6f8;border-bottom:1px solid var(--line);padding:11px 16px}
+  .pl-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+  .pl-row button{padding:6px 12px;font-size:12.5px;background:#fff}
+  .pl-row .play{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .pbar{flex:1;min-width:140px;height:6px;background:#dde1e6;border-radius:4px;overflow:hidden;position:relative}
+  .pbar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0%}
+  .pl-meta{font-size:11.5px;color:var(--sub);white-space:nowrap}
+  .pl-row2{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:var(--sub)}
+  .pl-row2 input[type=range]{width:90px;accent-color:var(--accent)}
+  .pl-row2 select{padding:5px 8px;font-size:12px}
+  .pl-search{display:flex;align-items:center;gap:6px;margin-top:9px}
+  .pl-search input{flex:1;font-size:12.5px}
+  .pl-search button{padding:6px 10px}
+  .empty{text-align:center;color:var(--sub);padding:46px}
+  @media(max-width:680px){.dual{grid-template-columns:1fr}.dual .col:first-child{border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="ph">📞</span> 해외사 컨콜 모음</h1>
+  <div class="tag"><a href="https://www.youtube.com/@earnmoar" target="_blank">EarnMoar YouTube</a> 채널 자동 수집 · Claude 핵심요약 + 전문번역 &nbsp;·&nbsp; <span id="upd"></span></div>
+
+  <div class="panel">
+    <div class="row1">
+      <select><option>최근 50개</option><option>최근 100개</option></select>
+      <button class="btn-d" onclick="alert('Cowork에서 Claude에게 \\'채널 새 영상 가져와줘\\' 라고 하면 fetch_channel.py를 실행해 목록을 갱신합니다.')">🔄 채널 영상 가져오기</button>
+      <input class="url" placeholder="YouTube URL 직접 입력 (https://youtu.be/...)">
+      <button class="btn-d" onclick="alert('Cowork에서 Claude에게 이 URL을 주면 자막 수집→번역→추가까지 진행합니다.')">➕ 추가</button>
+    </div>
+  </div>
+
+  <div class="panel"><div class="collap" onclick="this.classList.toggle('op')"><span class="cv">▶</span> ⚙️ 번역 모델 설정</div>
+    <div class="collap-body">번역 엔진은 <b>Cowork의 Claude</b>를 사용합니다 (API 키 불필요). 모델·톤·요약 길이는 Claude에게 직접 요청해 조정하세요.</div>
+  </div>
+  <div class="panel"><div class="collap" onclick="this.classList.toggle('op')"><span class="cv">▶</span> ⚡ 일괄 번역 — 대기 <span id="pendN">0</span>개</div>
+    <div class="collap-body">아직 번역되지 않은 '대기' 항목들입니다. "대기 중인 컨콜 전부 번역해줘"라고 하면 순서대로 채워 넣습니다.</div>
+  </div>
+
+  <div class="panel ind-row">
+    <button class="btn-d">🏭 산업 분류 수집</button>
+    <span class="hint">티커를 산업 대분류로 분류해 위 '산업' 필터에 반영합니다. (fetch_channel.py의 SECTOR 매핑 사용)</span>
+  </div>
+
+  <div class="panel"><div class="collap" onclick="this.classList.toggle('op')"><span class="cv">▶</span> ⚗️ 번역 품질 비교 — Claude vs Gemini</div>
+    <div class="collap-body">동일 문단을 두 모델로 번역해 비교할 수 있습니다(선택 기능).</div>
+  </div>
+
+  <div class="filters">
+    <select id="fStatus" class="done"><option value="">✅ 전체 상태</option><option value="done">번역 완료</option><option value="pending">대기</option></select>
+    <select id="fIndustry"><option value="">전체 산업</option></select>
+    <select id="fYear"><option value="">전체 연도</option></select>
+    <select id="fQuarter"><option value="">전체 분기</option></select>
+    <select id="fSort"><option value="latest">최신순</option><option value="ticker">티커순</option></select>
+  </div>
+  <input id="fSearch" class="search" placeholder="제목·티커 검색 (예: NVDA, 반도체, Tesla)…">
+  <div class="count" id="count"></div>
+
+  <div id="list"></div>
+
+  <div class="pager">
+    <button onclick="page(-1)">◀ 이전</button>
+    <span id="pageInfo">페이지 1 / 1</span>
+    <button onclick="page(1)">다음 ▶</button>
+  </div>
+</div>
+
+<script>
+let CALLS=[], P=0, PER=20, synth=window.speechSynthesis, curU=null;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+async function load(){
+  try{
+    const r=await fetch('data/calls.json?_='+Date.now());
+    const d=await r.json(); CALLS=d.calls||[];
+    $('#upd').textContent='업데이트: '+(d.updated||'');
+  }catch(e){ $('#list').innerHTML='<div class="empty">data/calls.json 로드 실패 — 로컬은 python3 -m http.server 로 여세요.</div>'; return; }
+  $('#pendN').textContent=CALLS.filter(c=>c.status!=='done').length;
+  buildFilters(); render();
+}
+function uniq(k){return [...new Set(CALLS.map(c=>c[k]).filter(Boolean))]}
+function buildFilters(){
+  fill('#fIndustry',uniq('industry')); fill('#fYear',uniq('year').sort().reverse()); fill('#fQuarter',uniq('quarter').sort());
+}
+function fill(sel,arr){const e=$(sel);arr.forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;e.appendChild(o)})}
+
+function filtered(){
+  const st=$('#fStatus').value,fi=$('#fIndustry').value,fy=$('#fYear').value,fq=$('#fQuarter').value,fs=$('#fSearch').value.toLowerCase();
+  let out=CALLS.filter(c=>
+    (!st||(st==='done'?c.status==='done':c.status!=='done'))&&
+    (!fi||c.industry===fi)&&(!fy||c.year===fy)&&(!fq||c.quarter===fq)&&
+    (!fs||(c.title+c.ticker+c.company).toLowerCase().includes(fs)));
+  if($('#fSort').value==='ticker') out.sort((a,b)=>a.ticker.localeCompare(b.ticker));
+  return out;
+}
+function page(d){const t=filtered();const mx=Math.max(1,Math.ceil(t.length/PER));P=Math.min(mx-1,Math.max(0,P+d));render(true)}
+function render(keep){
+  const out=filtered(); const mx=Math.max(1,Math.ceil(out.length/PER)); if(P>=mx)P=0;
+  $('#count').textContent=`${out.length}개 / 전체 ${CALLS.length}개`;
+  $('#pageInfo').textContent=`페이지 ${P+1} / ${mx}`;
+  const slice=out.slice(P*PER,P*PER+PER);
+  $('#list').innerHTML=slice.length?slice.map(card).join(''):'<div class="empty">조건에 맞는 컨콜이 없습니다.</div>';
+}
+
+function md(t){return t?marked.parse(t):'<p style="color:#9ca3af">내용 없음</p>'}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function paras(t){return (t||'').split(/\n\n+/).filter(x=>x.trim())}
+
+function card(c){
+  const done=c.status==='done';
+  const enP=paras(c.transcript_en),koP=paras(c.transcript_ko);
+  const n=Math.max(enP.length,koP.length);
+  let dual='';for(let i=0;i<n;i++)dual+=`<p>${esc(koP[i]||'')}</p>`;
+  let dualEn='';for(let i=0;i<n;i++)dualEn+=`<p>${esc(enP[i]||'')}</p>`;
+  const trBody=arr=>arr.length?arr.map((p,i)=>`<p data-i="${i}">${esc(p)}</p>`).join(''):'<p style="color:#9ca3af">내용 없음</p>';
+  return `<div class="card" id="c-${c.id}">
+    <div class="chead" onclick="toggle('${c.id}')">
+      <div class="chk ${done?'done':''}">${done?'✓':''}</div>
+      <div style="flex:1">
+        <p class="ctitle">${done?'<span class="vmark">✔</span>':''}<span class="tk">$${c.ticker}</span> ${c.title}</p>
+        <div class="csub">🏭 ${c.industry||'미분류'}${c.subindustry?' › '+c.subindustry:''} · ${c.year} ${c.quarter} ${done?'':'<span class="badge-pend">대기</span>'}</div>
+      </div>
+      <div class="cicons" onclick="event.stopPropagation()">
+        <button onclick="toggle('${c.id}')">닫기</button>
+        <button title="번역 상태">${done?'✅':'⬜'}</button>
+        <button title="다시 수집">🔄</button>
+        ${c.videoUrl?`<button title="유튜브 열기" onclick="window.open('${c.videoUrl}','_blank')">▶</button>`:''}
+      </div>
+    </div>
+    <div class="cbody">
+      <div class="modes" role="radiogroup">
+        <label class="on"><input type="radio" name="m-${c.id}" checked onchange="mode('${c.id}','sum',this)">📋 핵심 요약</label>
+        <label><input type="radio" name="m-${c.id}" onchange="mode('${c.id}','tr',this)">📄 전문 번역 (한국어)</label>
+        <label><input type="radio" name="m-${c.id}" onchange="mode('${c.id}','en',this)">🌐 원문 (영어)</label>
+        <label><input type="radio" name="m-${c.id}" onchange="mode('${c.id}','dual',this)">🔀 한·영 대조</label>
+        <label><input type="radio" name="m-${c.id}" onchange="mode('${c.id}','qa',this)">❓ Q&amp;A</label>
+      </div>
+      <div class="hltb">✏️ 드래그 = 형광펜 · 형광펜 클릭 = 삭제
+        <button class="clr" onclick="clearHl('${c.id}')">전체 지우기</button></div>
+
+      <div class="pane on" data-p="sum">${md(c.summary_ko)}</div>
+
+      <div class="pane" data-p="tr">${player(c.id,'tr')}<div class="selectable" onmouseup="hl(event)" onclick="unhl(event)">${trBody(koP)}</div></div>
+      <div class="pane" data-p="en">${player(c.id,'en')}<div class="selectable" onmouseup="hl(event)" onclick="unhl(event)">${trBody(enP)}</div></div>
+
+      <div class="pane" data-p="dual"><div class="dual">
+        <div class="col"><div class="lbl">한국어</div>${dual||'<p style="color:#9ca3af">내용 없음</p>'}</div>
+        <div class="col"><div class="lbl">English</div>${dualEn||'<p style="color:#9ca3af">내용 없음</p>'}</div></div></div>
+
+      <div class="pane" data-p="qa">${md(c.qa_ko)}</div>
+    </div>
+  </div>`;
+}
+
+function player(id,kind){
+  const lang=kind==='en'?'en-US':'ko-KR';
+  return `<div class="player" data-lang="${lang}">
+    <div class="pl-row">
+      <button class="play" onclick="plPlay('${id}',this)">▶ 재생</button>
+      <button onclick="plStop()">■ 정지</button>
+      <button onclick="plStep('${id}',-1)">◀ 문단</button>
+      <button onclick="plStep('${id}',1)">문단 ▶</button>
+      <div class="pbar"><i></i></div>
+      <span class="pl-meta">0 / 0</span>
+    </div>
+    <div class="pl-row2">
+      속도 <input type="range" min="0.5" max="2" step="0.1" value="1" oninput="this.nextElementSibling.textContent=this.value+'x';plRate=+this.value"><span>1.0x</span>
+      <select class="voice"></select>
+      <button onclick="plCopy('${id}')">📋 전체 복사</button>
+      <button onclick="clearHl('${id}')">형광펜 전체 삭제</button>
+    </div>
+    <div class="pl-search">
+      <input placeholder="🔍 번역문 검색 (Enter=다음)" onkeydown="if(event.key==='Enter')plFind('${id}',this.value)">
+      <button onclick="plFind('${id}',this.previousElementSibling.value)">◀</button>
+      <button onclick="plFind('${id}',this.previousElementSibling.previousElementSibling.value)">▶</button>
+    </div>
+  </div>`;
+}
+
+function toggle(id){$('#c-'+id).classList.toggle('open')}
+function mode(id,p,el){
+  const card=$('#c-'+id); plStop();
+  card.querySelectorAll('.modes label').forEach(l=>l.classList.remove('on'));
+  el.closest('label').classList.add('on');
+  card.querySelectorAll('.pane').forEach(pn=>pn.classList.toggle('on',pn.dataset.p===p));
+  // 형광펜 툴바는 텍스트 모드에서만 표시
+  card.querySelector('.hltb').style.display=(p==='sum'||p==='qa'||p==='dual')?'none':'flex';
+}
+
+/* ---- highlight ---- */
+function hl(e){
+  const sel=window.getSelection(); if(!sel.rangeCount||sel.isCollapsed)return;
+  const r=sel.getRangeAt(0); if(!e.currentTarget.contains(r.commonAncestorContainer))return;
+  try{const m=document.createElement('mark');m.appendChild(r.extractContents());r.insertNode(m);sel.removeAllRanges();}catch(_){}
+}
+function unhl(e){ if(e.target.tagName==='MARK'){const p=e.target.parentNode;while(e.target.firstChild)p.insertBefore(e.target.firstChild,e.target);p.removeChild(e.target);p.normalize();} }
+function clearHl(id){$('#c-'+id).querySelectorAll('mark').forEach(m=>{const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize();})}
+
+/* ---- TTS player ---- */
+let plRate=1, plIdx=0, plNodes=[], plBox=null, plBar=null, plMeta=null;
+function curPane(id){return $('#c-'+id+' .pane.on')}
+function setupPl(id){
+  const pane=curPane(id); plBox=pane.querySelector('.selectable'); if(!plBox)return false;
+  plNodes=[...plBox.querySelectorAll('p')]; plBar=pane.querySelector('.pbar i'); plMeta=pane.querySelector('.pl-meta');
+  return plNodes.length>0;
+}
+function plPlay(id,btn){
+  if(!setupPl(id))return; plStop(true);
+  speakFrom(id, plIdx||0);
+}
+function speakFrom(id,i){
+  if(i>=plNodes.length){plStop();return}
+  plIdx=i; const pane=curPane(id); const lang=pane.querySelector('.player').dataset.lang;
+  plNodes.forEach(n=>n.classList.remove('cur')); plNodes[i].classList.add('cur');
+  plNodes[i].scrollIntoView({block:'center',behavior:'smooth'});
+  plBar.style.width=((i+1)/plNodes.length*100)+'%';
+  plMeta.textContent=`${i+1} / ${plNodes.length}`;
+  const u=new SpeechSynthesisUtterance(plNodes[i].textContent); u.lang=lang; u.rate=plRate;
+  const vs=pane.querySelector('.voice'); if(vs&&vs.value){const v=synth.getVoices().find(x=>x.name===vs.value);if(v)u.voice=v;}
+  u.onend=()=>{ if(curU===u) speakFrom(id,i+1); };
+  curU=u; synth.cancel(); synth.speak(u);
+}
+function plStop(keepIdx){ synth.cancel(); curU=null; if(!keepIdx&&plBox)plBox.querySelectorAll('p.cur').forEach(n=>n.classList.remove('cur')); }
+function plStep(id,d){ if(!setupPl(id))return; plIdx=Math.min(plNodes.length-1,Math.max(0,plIdx+d)); speakFrom(id,plIdx); }
+function plCopy(id){ const pane=curPane(id); const t=[...pane.querySelectorAll('.selectable p')].map(p=>p.textContent).join('\n\n');
+  navigator.clipboard.writeText(t).then(()=>toast('복사됨')); }
+function plFind(id,q){ if(!q)return; const pane=curPane(id); const ps=[...pane.querySelectorAll('.selectable p')];
+  pane._fi=(pane._fi||0); for(let k=0;k<ps.length;k++){const idx=(pane._fi+k)%ps.length;
+    if(ps[idx].textContent.includes(q)){ps.forEach(p=>p.style.background='');ps[idx].style.background='#ffe28a';
+      ps[idx].scrollIntoView({block:'center',behavior:'smooth'});pane._fi=idx+1;return;}} toast('없음'); }
+
+function toast(m){const d=document.createElement('div');d.textContent=m;
+  d.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;z-index:99';
+  document.body.appendChild(d);setTimeout(()=>d.remove(),1200);}
+
+/* populate voices */
+function loadVoices(){const vs=synth.getVoices();$$('.voice').forEach(sel=>{if(sel._done)return;
+  const lang=sel.closest('.player').dataset.lang.slice(0,2);
+  vs.filter(v=>v.lang.startsWith(lang)).forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=v.name;sel.appendChild(o)});
+  if(!sel.options.length){const o=document.createElement('option');o.textContent='기본 음성';sel.appendChild(o)} sel._done=1;});}
+if(synth) synth.onvoiceschanged=loadVoices;
+
+['#fStatus','#fIndustry','#fYear','#fQuarter','#fSort','#fSearch'].forEach(s=>$(s).addEventListener('input',()=>{P=0;render();}));
+load().then(()=>{setTimeout(loadVoices,300);
+  // re-bind voices after each render
+  new MutationObserver(()=>setTimeout(loadVoices,50)).observe($('#list'),{childList:true});
+});
+</script>
+</body>
+</html>
